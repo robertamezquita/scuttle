@@ -63,7 +63,8 @@
 #' @export
 #' @importFrom SingleCellExperiment colData reducedDims reducedDimNames altExps altExpNames
 makePerCellDF <- function(x, features=NULL, assay.type="logcounts", 
-    use.coldata=TRUE, use.dimred=TRUE, use.altexps=TRUE, prefix.altexps=FALSE, check.names=FALSE,
+    use.coldata=TRUE, use.dimred=TRUE, use.altexps=TRUE, prefix.altexps=FALSE, check.names=FALSE, 
+    tbl.format=FALSE, long.format=TRUE,
     exprs_values=NULL, use_dimred=NULL, use_altexps=NULL, prefix_altexps=NULL, check_names=NULL)
 {
     use.dimred <- .replace(use.dimred, use_dimred)
@@ -119,6 +120,13 @@ makePerCellDF <- function(x, features=NULL, assay.type="logcounts",
     output <- do.call(cbind, output)
     if (check.names) {
         colnames(output) <- make.names(colnames(output), unique=TRUE)
+    }
+                                                 
+    if (tbl.format) {
+        output <- tibbles::as_tibble(output)   
+        if (long.format) {
+            output = tidyr::pivot_longer() # TODO
+        }
     }
     output
 }
